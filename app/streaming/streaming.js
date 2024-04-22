@@ -69,7 +69,7 @@ export default function handler(req, res) {
 
 */
 
-import SSE from "express-sse";
+/*import SSE from "express-sse";
 import { OpenAI } from "langchain/llms/openai";
 
 const sse = new SSE();
@@ -108,6 +108,55 @@ export default function handler(req, res) {
     });
 
     return res.status(200).json({ result: "Streaming started" });
+  } else if (req.method === "GET") {
+    sse.init(req, res);
+  } else {
+    res.status(405).json({ message: "Method not allowed" });
+  }
+}
+*/
+import SSE from "express-sse";
+import { BufferMemory, ConversationChain, OpenAI } from "langchain/llms/openai";
+
+const sse = new SSE();
+let model;
+let memory;
+let chain;
+
+export default async function handler(req, res) {
+  if (req.method === "POST") {
+    const { input, firstMsg } = req.body;
+
+    if (!input) {
+      res.status(400).json({ error: "No input provided" });
+      return;
+    }
+
+    if (firstMsg || !chain) {
+      console.log("Initializing or resetting conversation chain");
+      model = new OpenAI({ modelName: "gpt-3.5-turbo", streaming: true });
+      memory = new BufferMemory();
+      chain = new ConversationChain({ llm: model, memory: memory });
+    }
+
+    console.log({ input });
+    try {
+      // Using invoke to handle callbacks and manage streaming
+      await chain.invoke(input, {
+        callbacks: {
+          onToken: (token) => sse.send(token, "newToken"),
+          onEnd: () => sse.send(null, "end"),
+          onError: (error) => {
+            console.error("Error during streaming:", error);
+            sse.send(`Error: ${error.message}`, "error");
+          }
+        }
+      });
+      res.status(200).json({ result: "Streaming complete" });
+    } catch (error) {
+      console.error("Error during conversation chain call:", error);
+      res.status(500).json({ error: error.message });
+    }
   } else if (req.method === "GET") {
     sse.init(req, res);
   } else {
