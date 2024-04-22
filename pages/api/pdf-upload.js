@@ -1,26 +1,35 @@
-import { PDFLoader } from "langchain/document_loaders/fs/pdf";
-import { PineconeClient } from "@pinecone-database/pinecone";
-import { Document } from "langchain/document";
-import { OpenAIEmbeddings } from "langchain/embeddings/openai";
-import { PineconeStore } from "langchain/vectorstores/pinecone";
-import { CharacterTextSplitter } from "langchain/text_splitter";
+import { PDFLoader } from 'langchain/document_loaders/fs/pdf';
 
-// Example: https://js.langchain.com/docs/modules/indexes/document_loaders/examples/file_loaders/pdf
 export default async function handler(req, res) {
-  if (req.method === "GET") {
-    console.log("Inside the PDF handler");
-    // Enter your code here
-    /** STEP ONE: LOAD DOCUMENT */
+	if (req.method === 'GET') {
+		console.log('Uploading book');
+		/** STEP ONE: LOAD DOCUMENT */
+		const { bookId } = req.query;
+		const bookDb = {
+			101: 'C:\\Users\\riyam\\AI\\openai-javascript-course\\data\\document_loaders\\naval-ravikant-book.pdf',
+		};
+		const bookPath = bookDb[bookId];
+		if (!bookPath) {
+			console.log(`Book with ID ${bookId} not found.`);
+			return res.status(404).json({ error: 'Book not found' });
+		}
 
-    // Chunk it
+		console.log(`Loading book from path: ${bookPath}`);
+		const loader = new PDFLoader(bookPath);
 
-    // Reduce the size of the metadata
+		try {
+			const docs = await loader.load();
+			if (docs.length === 0) {
+				console.log('No documents found.');
+				return res.status(404).json({ error: 'No documents found' });
+			}
 
-    /** STEP TWO: UPLOAD TO DATABASE */
-
-    // upload documents to Pinecone
-    return res.status(200).json({ result: docs });
-  } else {
-    res.status(405).json({ message: "Method not allowed" });
-  }
+			// Rest of the code follows...
+		} catch (error) {
+			console.error('Error loading documents:', error);
+			return res.status(500).json({ error: 'Failed to load documents' });
+		}
+	} else {
+		res.status(405).json({ message: 'Method not allowed' });
+	}
 }

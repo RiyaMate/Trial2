@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import PageHeader from "../components/PageHeader";
 import PromptBox from "../components/PromptBox";
 import ResultWithSources from "../components/ResultWithSources";
@@ -49,9 +49,14 @@ const ContentGenerator = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ prompt: prompt, topic: topic, firstMsg }),
+        body: JSON.stringify({
+          prompt: prompt,
+          topic: topic,
+          firstMsg: firstMsg,
+          metadataString: metadataString  // Assuming 'metadataString' contains the metadata you want to send
+        }),
       });
-
+      
       const searchRes = await response.json();
 
       console.log({ searchRes });

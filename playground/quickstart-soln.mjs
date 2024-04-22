@@ -1,13 +1,10 @@
-import { OpenAI } from "langchain/llms/openai";
-import { ChatOpenAI } from "langchain/chat_models/openai";
-import { PromptTemplate } from "langchain/prompts";
 import { LLMChain } from "langchain/chains";
-import { initializeAgentExecutorWithOptions } from "langchain/agents";
+import { ChatOpenAI } from "langchain/chat_models/openai";
+import { PlanAndExecuteAgentExecutor } from "langchain/experimental/plan_and_execute";
+import { OpenAI } from "langchain/llms/openai";
+import { PromptTemplate } from "langchain/prompts";
 import { SerpAPI } from "langchain/tools";
 import { Calculator } from "langchain/tools/calculator";
-import { BufferMemory } from "langchain/memory";
-import { ConversationChain } from "langchain/chains";
-import { PlanAndExecuteAgentExecutor } from "langchain/experimental/plan_and_execute";
 
 /**
  *
@@ -118,7 +115,7 @@ const chain = new LLMChain({ llm: model, prompt: prompt });
 // davinci - default
 const agentModel = new OpenAI({
   temperature: 0,
-  modelName: "text-davinci-003",
+  modelName: "gpt-3.5-turbo",
 });
 
 // serpTool.returnDirect = true;

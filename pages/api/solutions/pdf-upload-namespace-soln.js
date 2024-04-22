@@ -48,7 +48,7 @@ export default async function handler(req, res) {
 
 		await client.init({
 			apiKey: process.env.PINECONE_API_KEY,
-			environment: process.env.PINECONE_ENVIRONMENT,
+			environment: process.env.PINECONE_ENV,
 		})
 
 		const pineconeIndex = client.Index(process.env.PINECONE_INDEX)

@@ -1,7 +1,6 @@
-// import { useState } from "react";
-
-// export default function HomeClient() {
-//   // Define query parameters as an object
+ 
+ //export default function HomeClient() {
+// Define query parameters as an object
 //   const queryParams = {
 //     videoId: "O_9JoimRj8w",
 //   };

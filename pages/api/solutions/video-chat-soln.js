@@ -1,10 +1,10 @@
 // /pages/api/transcript.js
-import { YoutubeTranscript } from "youtube-transcript";
-import { ChatOpenAI } from "langchain/chat_models/openai";
 import { ConversationalRetrievalQAChain } from "langchain/chains";
-import { HNSWLib } from "langchain/vectorstores/hnswlib";
+import { ChatOpenAI } from "langchain/chat_models/openai";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { CharacterTextSplitter } from "langchain/text_splitter";
+import { HNSWLib } from "langchain/vectorstores/hnswlib";
+import { YoutubeTranscript } from "youtube-transcript";
 
 /**
  *

@@ -1,5 +1,5 @@
 import { ChatOpenAI } from "langchain/chat_models/openai";
-import { HumanChatMessage, SystemChatMessage } from "langchain/schema";
+import { HumanChatMessage } from "langchain/schema";
 
 /**
  *
