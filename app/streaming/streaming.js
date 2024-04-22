@@ -304,6 +304,8 @@ export default function handler(req, res) {
 }
 */
 
+//WORKING LOCAL
+/*
 import SSE from "express-sse";
 import { OpenAI } from "langchain/llms/openai";
 
@@ -341,6 +343,59 @@ export default function handler(req, res) {
     });
 
     return res.status(200).json({ result: "Streaming complete" });
+  } else if (req.method === "GET") {
+    sse.init(req, res);
+  } else {
+    res.status(405).json({ message: "Method not allowed" });
+  }
+}*/
+
+import SSE from "express-sse";
+import { OpenAI } from "langchain/llms/openai";
+
+const sse = new SSE();
+
+export default function handler(req, res) {
+  if (req.method === "POST") {
+    const { input } = req.body;
+
+    if (!input) {
+      // Send a response immediately if input is missing
+      return res.status(400).json({ error: "No input provided" });
+    }
+
+    // Set headers for SSE
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+
+    // Initialize model
+    const chat = new OpenAI({
+      modelName: "gpt-3.5-turbo",
+      streaming: true
+    });
+
+    // Create the prompt
+    const prompt = `Create me a short rap about my name and city. Make it funny and punny. Name: ${input}`;
+    console.log({ prompt });
+
+    // Invoke the AI model and manage the stream
+    chat.invoke(prompt, {
+      callbacks: {
+        onToken: (token) => {
+          sse.send(token, "newToken");
+        },
+        onEnd: () => {
+          sse.send(null, "end");
+          res.end();  // Close the SSE connection properly
+        },
+        onError: (error) => {
+          console.error("Error during streaming:", error);
+          sse.send(`Error: ${error.message}`, "error");
+          res.end();  // Ensure to close on errors as well
+        }
+      }
+    });
   } else if (req.method === "GET") {
     sse.init(req, res);
   } else {
