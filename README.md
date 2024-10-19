@@ -9,7 +9,7 @@ To get started, clone this repository and install the dependencies:
 Clone the repository
 
 ```
-git clone https://github.com/shawnesquivel/openai-javascript-course.git
+
 ```
 
 Navigate to folder
