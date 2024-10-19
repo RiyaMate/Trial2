@@ -44,7 +44,7 @@ Introduciton to AI with JavaScript
 - Build a PDF chatbot
 - Learn to use AI tools from Langchain
 - Automate Social Media Content generation
-- Deploying a Langchain app for FREE
+- Deploying a Langchain app
 
 Each topic has code examples and exercises to help you learn!
 
